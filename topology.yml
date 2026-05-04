@@ -1,18 +1,18 @@
 name: insider-threat-sandbox
 
-routers:
-  - name: router
-    base_box: debian-11
-
 hosts:
   - name: target-server
     base_box: ubuntu-22-04
-    # Ghi chú: Nếu hệ thống của bạn yêu cầu chỉ định tài nguyên, 
-    # hãy thay bằng 'flavor: <tên_flavor_trên_openstack>' thay vì vcpu/ram.
+    flavor: standard.small  # (1) BẮT BUỘC: OpenStack cần flavor để cấp phát RAM/CPU
+
+routers:
+  - name: router
+    base_box: debian-11
+    flavor: standard.small  # Bắt buộc phải có flavor
 
 networks:
   - name: exam_online_net
-    cidr: 192.168.100.0/24
+    cidr: 192.168.100.0/24  # (2) BẮT BUỘC: Phải có subnet mask (/24). Nếu chỉ để 192.168.100.0 sẽ bị lỗi unpack!
 
 net_mappings:
   - host: target-server
@@ -23,3 +23,9 @@ router_mappings:
   - router: router
     network: exam_online_net
     ip: 192.168.100.1
+
+# (3) Thêm Groups để hệ thống tự động build inventory cho Ansible
+groups:
+  - name: targets
+    nodes:
+      - target-server
