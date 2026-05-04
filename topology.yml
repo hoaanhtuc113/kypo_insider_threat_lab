@@ -4,15 +4,15 @@ hosts:
   - name: target-server
     flavor: standard.small
     base_box:
-      image: ubuntu-22-04
-      mgmt_user: ubuntu
+      image: ubuntu-noble-x86_64  # Đã đổi sang Ubuntu 24.04
+      mgmt_user: ubuntu           # User mặc định vẫn giữ nguyên là ubuntu
 
 routers:
   - name: router
     flavor: standard.small
     base_box:
-      image: debian-11
-      mgmt_user: debian
+      image: debian-12-x86_64     # Đã đổi sang Debian 12
+      mgmt_user: debian           # User mặc định vẫn giữ nguyên là debian
 
 networks:
   - name: exam-online-net
