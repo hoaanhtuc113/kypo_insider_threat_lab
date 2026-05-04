@@ -1,0 +1,23 @@
+name: insider-threat-sandbox
+nodes:
+  - name: router
+    type: router
+    os: debian-11
+  - name: target-server
+    type: host
+    os: ubuntu-22-04
+    hardware:
+      vcpu: 2
+      ram: 2048
+
+networks:
+  - name: exam_online_net
+    cidr: 192.168.100.0/24
+
+links:
+  - node: target-server
+    network: exam_online_net
+    ip: 192.168.100.10
+  - node: router
+    network: exam_online_net
+    ip: 192.168.100.1

