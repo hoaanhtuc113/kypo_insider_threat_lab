@@ -4,8 +4,8 @@ hosts:
   - name: target-server
     flavor: standard.small
     base_box:
-      image: ubuntu-22-04  # Phải khớp với tên image trên hệ thống cloud
-      mgmt_user: ubuntu    # Bắt buộc khai báo user mặc định (ubuntu, debian, root...)
+      image: ubuntu-22-04
+      mgmt_user: ubuntu
 
 routers:
   - name: router
@@ -15,17 +15,17 @@ routers:
       mgmt_user: debian
 
 networks:
-  - name: exam_online_net
+  - name: exam-online-net
     cidr: 192.168.100.0/24
 
 net_mappings:
   - host: target-server
-    network: exam_online_net
+    network: exam-online-net
     ip: 192.168.100.10
 
 router_mappings:
   - router: router
-    network: exam_online_net
+    network: exam-online-net
     ip: 192.168.100.1
 
 groups:
