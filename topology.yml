@@ -1,23 +1,25 @@
 name: insider-threat-sandbox
-nodes:
+
+routers:
   - name: router
-    type: router
-    os: debian-11
+    base_box: debian-11
+
+hosts:
   - name: target-server
-    type: host
-    os: ubuntu-22-04
-    hardware:
-      vcpu: 2
-      ram: 2048
+    base_box: ubuntu-22-04
+    # Ghi chú: Nếu hệ thống của bạn yêu cầu chỉ định tài nguyên, 
+    # hãy thay bằng 'flavor: <tên_flavor_trên_openstack>' thay vì vcpu/ram.
 
 networks:
   - name: exam_online_net
     cidr: 192.168.100.0/24
 
-links:
-  - node: target-server
+net_mappings:
+  - host: target-server
     network: exam_online_net
     ip: 192.168.100.10
-  - node: router
+
+router_mappings:
+  - router: router
     network: exam_online_net
     ip: 192.168.100.1
