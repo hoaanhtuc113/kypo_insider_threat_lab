@@ -2,52 +2,74 @@
   "title": "EXAM_ONLINE SOC: Điều tra Gián điệp nội bộ",
   "description": "Hệ thống Wazuh ghi nhận cảnh báo đăng nhập bất thường và thực thi lệnh đáng ngờ trên Target Server. Nhiệm vụ của bạn là truy cập vào máy chủ, phân tích log và tìm ra toàn bộ quy trình của kẻ tấn công.",
   "estimated_duration": 60,
-  "phases": [
+  "state": "UNRELEASED",
+  "outcomes": [],
+  "prerequisites": [],
+  "levels": [
     {
-      "type": "info",
+      "order": 0,
       "title": "Giai đoạn 0: Tiếp nhận sự cố",
+      "level_type": "INFO_LEVEL",
+      "estimated_duration": 5,
       "content": "Bạn được cấp quyền truy cập SSH vào Target Server (192.168.100.10) với tư cách là SOC Analyst (User: `analyst`, Pass: `analyst123`). Hãy sử dụng các lệnh đọc log như `grep`, `cat`, `less` để bắt đầu điều tra."
     },
     {
-      "type": "training",
+      "order": 1,
       "title": "Giai đoạn 1: Truy vết nguồn gốc",
+      "level_type": "TRAINING_LEVEL",
+      "estimated_duration": 15,
       "content": "Một cuộc tấn công Brute-force đã xảy ra. Hãy kiểm tra file `/var/log/auth.log`. Địa chỉ IP của kẻ tấn công là gì? Định dạng: KYPO{IP_Address}",
       "answer": "KYPO{10.10.55.200}",
+      "solution": "Sử dụng lệnh `grep 'Failed password' /var/log/auth.log` để lọc các lần đăng nhập sai. Địa chỉ IP của kẻ tấn công sẽ nằm ở phần cuối của các dòng log này.",
       "max_score": 10,
       "hints": [
         {
+          "order": 0,
+          "title": "Gợi ý 1",
           "content": "Bạn có thể dùng lệnh: `grep 'Failed password' /var/log/auth.log`",
-          "penalty": 2
+          "hint_penalty": 2
         }
       ]
     },
     {
-      "type": "training",
+      "order": 2,
       "title": "Giai đoạn 2: Nhận diện nạn nhân",
+      "level_type": "TRAINING_LEVEL",
+      "estimated_duration": 15,
       "content": "Kẻ tấn công đã dò đoán thành công mật khẩu của một người dùng trong hệ thống. Tên tài khoản (username) đó là gì? Định dạng: KYPO{username}",
       "answer": "KYPO{student_test}",
+      "solution": "Bạn cần tìm kiếm các lần đăng nhập thành công bằng lệnh `grep 'Accepted password' /var/log/auth.log`. Tên user nằm ngay sau chữ 'password for'.",
       "max_score": 10,
       "hints": [
         {
+          "order": 0,
+          "title": "Gợi ý 1",
           "content": "Hãy tìm dòng log chứa chữ 'Accepted password'.",
-          "penalty": 2
+          "hint_penalty": 2
         }
       ]
     },
     {
-      "type": "training",
+      "order": 3,
       "title": "Giai đoạn 3: Phân tích kỹ thuật leo thang đặc quyền",
+      "level_type": "TRAINING_LEVEL",
+      "estimated_duration": 25,
       "content": "Tài khoản bị lộ không có quyền root. Kẻ tấn công đã lợi dụng một công cụ có sẵn trên Linux (được cấu hình sai SUID) để đọc file `/root/flag.txt`. Đó là công cụ nào? Định dạng: KYPO{tên_lệnh}",
       "answer": "KYPO{find}",
+      "solution": "Kiểm tra lịch sử lệnh bằng `cat /home/student_test/.bash_history` để xem thao tác của kẻ tấn công, hoặc tự quét các file có cờ SUID bằng `find / -perm -4000 2>/dev/null` để phát hiện lệnh `find` được set quyền bất thường.",
       "max_score": 20,
       "hints": [
         {
+          "order": 0,
+          "title": "Gợi ý 1",
           "content": "Hãy kiểm tra file lịch sử dòng lệnh `.bash_history` của tài khoản nạn nhân.",
-          "penalty": 5
+          "hint_penalty": 5
         },
         {
+          "order": 1,
+          "title": "Gợi ý 2",
           "content": "Bạn cũng có thể dùng lệnh `find / -perm -4000 2>/dev/null` để quét các file có cờ SUID.",
-          "penalty": 5
+          "hint_penalty": 5
         }
       ]
     }
